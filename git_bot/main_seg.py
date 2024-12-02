@@ -7,7 +7,7 @@ import os
 import cv2
 import numpy as np
 
-API_TOKEN = '8098006102:AAHjih0BECr_h-QF04ALjfDeyl5EQLbDWjY'
+API_TOKEN = 'API'
 
 logging.basicConfig(level=logging.INFO)
 
