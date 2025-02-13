@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class UploadConfig(AppConfig):
+class ImageProcessingConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'upload'
+    name = 'image_processing'
