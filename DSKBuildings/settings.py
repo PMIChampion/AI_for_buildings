@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'image_processing.apps.ImageProcessingConfig',
 
-    'upload.apps.UploadConfig'
+    #'upload.apps.UploadConfig'
 ]
 
 MIDDLEWARE = [
