@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f4f7fb;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 350px;
+        }
+        .error {
+            color: red;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        input, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #5563c1;
+        }
+        .logout-btn {
+            background: #f44336;
+            width: auto;
+            margin-top: 20px;
+            padding: 10px;
+            color: white;
+        }
+        .logout-btn:hover {
+            background: #d32f2f;
+        }
+        #image-list {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .image-item {
+            margin-bottom: 10px;
+        }
+        .image-item img {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app">
+        <h1>Главная страница</h1>
+        <div id="image-list"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function() {
+            const token = localStorage.getItem("authToken");
+            const app = document.getElementById("app");
+
+            if (!token) {
+                app.innerHTML += `<p>Вам необходимо <a href='/login/'>войти</a> или <a href='/registration/'>зарегистрироваться</a></p>`;
+            } else {
+                try {
+                    const response = await fetch("http://localhost:8000/api/auth/users/me/", {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Token ${token}`,
+                            "Content-Type": "application/json"
+                        }
+                    });
+
+                    if (response.ok) {
+                        const userData = await response.json();
+                        app.innerHTML += `<p>Добро пожаловать, ${userData.first_name} ${userData.last_name}</p>`;
+
+                        app.innerHTML += `
+                        <input type="file" id="imageUpload">
+                        <button onclick="uploadImage()">Загрузить изображение</button>
+                        <button class="logout-btn" id="logout-btn" style="display:none;">Выйти</button>
+
+                        <p id="uploadMessage"></p>
+                    `;
+
+                        if (userData.position === "Инженер") {
+                            app.innerHTML += `<button onclick="viewImages()">Посмотреть все изображения</button>`;
+                        }
+
+                    document.getElementById("logout-btn").style.display = "block";
+
+                    document.getElementById("logout-btn").addEventListener("click", function() {
+                        localStorage.removeItem("authToken");
+                        location.reload();
+                    });
+
+                    } else {
+                        throw new Error("Ошибка получения данных пользователя");
+                    }
+                } catch (error) {
+                    console.error("Ошибка загрузки данных пользователя:", error);
+                }
+
+
+            }
+        });
+
+        async function uploadImage() {
+            const token = localStorage.getItem("authToken");
+            const fileInput = document.getElementById("imageUpload");
+            const uploadMessage = document.getElementById("uploadMessage");
+
+            if (!fileInput.files.length) {
+                uploadMessage.textContent = "Выберите файл для загрузки";
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("image", fileInput.files[0]);
+
+            try {
+                const response = await fetch("http://localhost:8000/api/image_processing/", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Token ${token}`
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    uploadMessage.textContent = "Изображение успешно загружено!";
+                    uploadMessage.style.color = "green";
+                } else {
+                    uploadMessage.textContent = "Ошибка загрузки изображения";
+                    uploadMessage.style.color = "red";
+                }
+            } catch (error) {
+                uploadMessage.textContent = "Ошибка сети";
+                uploadMessage.style.color = "red";
+            }
+        }
+
+        async function viewImages() {
+            const token = localStorage.getItem("authToken");
+            const imageListDiv = document.getElementById("image-list");
+
+            try {
+                const response = await fetch("http://localhost:8000/api/image_processing/", {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Token ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                if (response.ok) {
+                    const images = await response.json();
+                    if (images.length > 0) {
+                        let htmlContent = "<h3>Все изображения:</h3>";
+                        images.forEach(image => {
+                            const imageUrl = `http://localhost:8000${image.image}`;
+                            htmlContent += `
+                                <div class="image-item">
+                                    <img src="${imageUrl}" alt="Изображение">
+                                    <p>ID: ${image.id}</p>
+                                    <p>Дата: ${new Date(image.created_at).toLocaleString()}</p>
+                                </div>
+                            `;
+                        });
+                        imageListDiv.innerHTML = htmlContent;
+                    } else {
+                        imageListDiv.innerHTML = "<p>Нет изображений.</p>";
+                    }
+                } else {
+                    imageListDiv.innerHTML = "<p>Ошибка получения изображений.</p>";
+                }
+            } catch (error) {
+                imageListDiv.innerHTML = "<p>Ошибка сети.</p>";
+            }
+        }
+    </script>
+</body>
+</html>
