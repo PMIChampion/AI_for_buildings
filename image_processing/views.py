@@ -6,6 +6,10 @@ from .models import Image
 from users.models import User
 from .serializers import ImageSerializer
 
+from .MANIQA.predict_one_image import get_result_maniqa
+from .resnet import get_result_resnet
+from .yolo import get_result_yolo
+
 
 class ApiImage(APIView):
 
@@ -23,7 +27,8 @@ class ApiImage(APIView):
         serializer = ImageSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(uploaded_by=self.request.user)
+            print(get_result_maniqa(serializer.data['image']))
+
+            print(get_result_yolo(serializer.data['image']))
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
