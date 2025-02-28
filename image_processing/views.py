@@ -28,7 +28,7 @@ class ApiImage(APIView):
         if serializer.is_valid():
             serializer.save(uploaded_by=self.request.user)
             print(get_result_maniqa(serializer.data['image']))
-
+            print(get_result_resnet(serializer.data['image']))
             print(get_result_yolo(serializer.data['image']))
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
