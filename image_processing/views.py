@@ -6,10 +6,9 @@ from .models import Image
 from users.models import User
 from .serializers import ImageSerializer
 
+from .yolo import get_result_yolo
 from .MANIQA.predict_one_image import get_result_maniqa
 from .resnet import get_result_resnet
-from .yolo import get_result_yolo
-
 
 class ApiImage(APIView):
 

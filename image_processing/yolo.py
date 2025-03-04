@@ -1,10 +1,19 @@
 from ultralytics import YOLO
 import os
 
+relative_path_for_model = "image_processing/models/best-3.pt"
+relative_path_for_image = "../DSKBuildings"
+relative_path_for_image_processed = "../DskBuildings"
+
+absolute_path_for_model = os.path.abspath(relative_path_for_model)
+absolute_path_for_image = os.path.abspath(relative_path_for_image)
+absolute_path_for_image_processed = os.path.abspath(relative_path_for_image_processed)
+
+
 def get_result_yolo(file):
-    model = YOLO("/home/andrew/Рабочий стол/ЦК/DSKBuildings/image_processing/best-3.pt")
-    results = model([f"/home/andrew/Рабочий стол/ЦК/DSKBuildings/{file}"])
-    output_folder = "/home/andrew/Рабочий стол/ЦК/DSKBuildings/media/processed/"
+    model = YOLO(f"{absolute_path_for_model}")
+    results = model([f"{absolute_path_for_image}{file}"])
+    output_folder = "../DSKBuildings/media/processed"
     name = file.split("/")[-1]
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)

@@ -5,10 +5,18 @@ from PIL import Image
 import os
 import numpy as np
 
-MODEL_PATH = '/home/andrew/Рабочий стол/ЦК/DSKBuildings/image_processing/best_model.pth'
+relative_path_for_image = "../DSKBuildings"
+relative_path_for_model = "image_processing/models/best_model.pth"
+
+absolute_path_for_image = os.path.abspath(relative_path_for_image)
+absolute_path_for_model = os.path.abspath(relative_path_for_model)
+
+MODEL_PATH = f'{absolute_path_for_model}'
 CLASS_NAMES = ['concrete', 'other']
 INPUT_SIZE = 600
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+
 
 
 # Загрузка модели
@@ -61,7 +69,7 @@ def get_result_resnet(file_path):
     model = load_model()
     transform = get_transform()
 
-    image_path = f'/home/andrew/Рабочий стол/ЦК/DSKBuildings{file_path}'
+    image_path = f'{absolute_path_for_image}{file_path}'
 
     # print("Single image prediction:")
     single_result = predict_single_image(model, image_path, transform)
