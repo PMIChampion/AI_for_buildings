@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import torch
 import numpy as np
 import random
@@ -11,10 +11,15 @@ from .config import Config
 from .utils.inference_process import ToTensor, Normalize
 from tqdm import tqdm
 
-# Отключаем все GPU
-os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+# Относительные пути
+relative_path_for_model = Path("..") / "AI_for_buildings" / "image_processing" / "models" / "ckpt_koniq10k.pt"
+relative_path_for_image = Path("..")
 
-# Убедимся, что PyTorch не пытается использовать CUDA
+# Абсолютные пути
+absolute_path_for_model = relative_path_for_model.resolve()
+absolute_path_for_image = relative_path_for_image.resolve()
+
+# Отключаем все GPU
 torch.cuda.is_available = lambda: False
 torch.backends.cudnn.enabled = False  # Отключаем cudnn
 
@@ -23,10 +28,8 @@ device = torch.device('cpu')
 
 def setup_seed(seed):
     random.seed(seed)
-    os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
-    # Не используем cuda.manual_seed, так как не используем GPU
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
 
@@ -34,8 +37,8 @@ def setup_seed(seed):
 class Image(torch.utils.data.Dataset):
     def __init__(self, image_path, transform, num_crops=20):
         super(Image, self).__init__()
-        self.img_name = image_path.split('/')[-1]
-        self.img = cv2.imread(image_path, cv2.IMREAD_COLOR)
+        self.img_name = Path(image_path).name  # Получаем имя файла
+        self.img = cv2.imread(str(image_path), cv2.IMREAD_COLOR)
         self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB)
         self.img = np.array(self.img).astype('float32') / 255
         self.img = np.transpose(self.img, (2, 0, 1))
@@ -65,20 +68,23 @@ class Image(torch.utils.data.Dataset):
 
 
 def get_result_maniqa(file_path):
-
     cpu_num = 1
-    os.environ['OMP_NUM_THREADS'] = str(cpu_num)
-    os.environ['OPENBLAS_NUM_THREADS'] = str(cpu_num)
-    os.environ['MKL_NUM_THREADS'] = str(cpu_num)
-    os.environ['VECLIB_MAXIMUM_THREADS'] = str(cpu_num)
-    os.environ['NUMEXPR_NUM_THREADS'] = str(cpu_num)
     torch.set_num_threads(cpu_num)
 
     setup_seed(20)
 
+    # Удаляем начальный слэш, если он есть
+    file_path = file_path.lstrip("/\\")
+
+    # Полный путь к изображению
+    image_path = absolute_path_for_image / "AI_for_buildings" / file_path
+
+    if not image_path.exists():
+        raise FileNotFoundError(f"Файл не найден: {image_path}")
+
     # config file
     config = Config({
-        "image_path": f"/home/andrew/Рабочий стол/ЦК/DSKBuildings{file_path}",
+        "image_path": str(image_path),
         "num_crops": 20,
         "patch_size": 8,
         "img_size": 224,
@@ -90,7 +96,7 @@ def get_result_maniqa(file_path):
         "num_outputs": 1,
         "num_tab": 2,
         "scale": 0.8,
-        "ckpt_path": "/home/andrew/Рабочий стол/ЦК/DSKBuildings/image_processing/MANIQA/ckpt_koniq10k.pt",
+        "ckpt_path": str(absolute_path_for_model),
     })
 
     # data load
@@ -105,22 +111,17 @@ def get_result_maniqa(file_path):
 
     # Загрузка модели на CPU
     net.load_state_dict(torch.load(config.ckpt_path, map_location=device), strict=False)
-    net.to(device)  # Перемещаем модель на CPU
+    net.to(device)
 
     avg_score = 0
     for i in tqdm(range(config.num_crops)):
         with torch.no_grad():
             net.eval()
             patch_sample = Img.get_patch(i)
-            patch = patch_sample['d_img_org']  # Данные на CPU
-            patch = patch.unsqueeze(0)  # Добавление измерения для батча
-            patch = patch.to(device)  # Убедитесь, что данные на CPU
-            score = net(patch)  # Прогон через модель
+            patch = patch_sample['d_img_org']
+            patch = torch.tensor(patch).unsqueeze(0).to(device)  # Преобразование в Tensor
+            score = net(patch)
             avg_score += score
 
-    if avg_score / config.num_crops > 0:
-        return "Image {} score: {}".format(Img.img_name, avg_score / config.num_crops)
-
-    else:
-        return "Качество изображения низкое"
-
+    avg_score /= config.num_crops
+    return f"Image {Img.img_name} score: {avg_score}" if avg_score > 0 else "Качество изображения низкое"

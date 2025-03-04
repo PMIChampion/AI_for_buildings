@@ -1,6 +1,7 @@
 django
 djangorestframework
 djoser
+django-cors-headers
 psycopg
 timm
 ultralytics
