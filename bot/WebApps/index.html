@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Авторизация</h2>
+
+        <!-- Почта -->
+        <input type="email" id="email" placeholder="Почта" required>
+
+        <!-- Пароль -->
+        <div class="password-container">
+            <input type="password" id="password" placeholder="Пароль" required>
+            <button onclick="togglePasswordVisibility('password')">👁️</button>
+        </div>
+
+        <!-- Кнопка входа -->
+        <button class="animated-button" onclick="login()">Войти</button>
+
+        <!-- Заглушка для "Забыли пароль" -->
+        <p><a href="recovery.html">Забыли пароль?</a></p>
+
+        <!-- Ссылка на регистрацию -->
+        <p><a href="register.html">Регистрация</a></p>
+    </div>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
