@@ -1,8 +1,6 @@
 from aiogram import Bot, Dispatcher
 from bot.config.config import BOT_TOKEN
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-#  from config.config import BOT_TOKEN
-
 
 # Для сервера
 # proxy_url = 'http://proxy.server:3128'
