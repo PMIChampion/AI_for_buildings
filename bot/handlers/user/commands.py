@@ -6,7 +6,6 @@ from aiogram.types import WebAppInfo, InlineKeyboardMarkup, InlineKeyboardButton
 
 
 async def start_command(message: types.Message):
-    # Создаем кнопку с Web App для авторизации
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
     web_app_button = KeyboardButton("Войти", web_app=WebAppInfo(url=URL))
     keyboard.add(web_app_button)
