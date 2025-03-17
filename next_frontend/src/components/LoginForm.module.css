@@ -1,0 +1,72 @@
+.loginform {
+  padding: min(30px, 2%);
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+  width: min(350px, 90%);
+}
+
+.header {
+  margin: 25px;
+  color:black;
+  font-size: 24px;
+  text-align: center;
+}
+
+.form {
+    padding: 0 30px;
+    width: 100%;
+    margin: 20px 0;
+    
+  }
+  
+.input {
+    background-color: white;
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color:black;
+}
+.input:-webkit-autofill {
+  background-color: #ffffff;
+  color: black;
+  border: 1px solid #ccc;
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+  -webkit-text-fill-color: black;
+}
+
+.input:-moz-autofill {
+  background-color: #ffffff;
+  color: black;
+  border: 1px solid #ccc;
+}
+  
+.button {
+  background: #202632;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.button:hover {
+  background: #475d74;
+}
+
+.error {
+  color: rgb(248, 25, 88);
+  margin-top: 10px;
+  text-align: center;
+}
+
+.link {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+}
