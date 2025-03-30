@@ -75,15 +75,11 @@ def get_result_resnet(file_path):
     file_path = file_path.lstrip("/\\")
 
     # Полный путь к изображению
-    image_path = absolute_path_for_image / file_path
+    # image_path = absolute_path_for_image / file_path
+    image_path = '/' + file_path
 
     # Проверяем существование файла
-    if not image_path.exists():
-        raise FileNotFoundError(f"Файл не найден: {image_path}")
 
     # Предсказание
     single_result = predict_single_image(model, image_path, transform)
-    if single_result['class'] == 'concrete':
-        return single_result['class']
-    else:
-        raise TypeError("Не бетон")
+    return single_result['class']

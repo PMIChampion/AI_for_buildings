@@ -39,7 +39,8 @@ def get_result_yolo(file):
         file = file[1:]
 
     # Полный путь к изображению
-    image_path = absolute_path_for_image / file
+    # image_path = absolute_path_for_image / file
+    image_path = '/' + file
 
     # Загрузка модели
     model = YOLO(str(absolute_path_for_model))
@@ -48,7 +49,7 @@ def get_result_yolo(file):
     results = model([str(image_path)])
 
     # Путь к папке для сохранения обработанных изображений
-    output_folder = Path("..") / "AI_for_buildings" / "media" / "processed"
+    output_folder = Path("") / "media" / "processed"
     output_folder.mkdir(parents=True, exist_ok=True)
 
     # Имя файла
@@ -58,7 +59,7 @@ def get_result_yolo(file):
     for result in results:
         result.show()
         result.save(filename=str(output_folder / name))
-        return "Изображение обработано"
+        return str(output_folder / name)
 
     else:
         raise BaseException("Ошибка")
