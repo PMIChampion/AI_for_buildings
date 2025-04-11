@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 
 from django.core.files.base import ContentFile
+from drf_yasg import openapi
+from rest_framework.parsers import MultiPartParser, FormParser
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
@@ -23,6 +25,7 @@ from .resnet import get_result_resnet
 
 class ApiImage(APIView):
     permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
 
     def get(self, request, pk):
         try:
@@ -39,10 +42,47 @@ class ApiImage(APIView):
         serializer = ImageSerializer(images, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @swagger_auto_schema(responses={200: ImageSerializer(many=True)})
+    @swagger_auto_schema(
+        operation_description="Загрузить изображение для обработки",
+        manual_parameters=[
+            openapi.Parameter(
+                name="image",
+                in_=openapi.IN_FORM,
+                type=openapi.TYPE_FILE,
+                required=True,
+                description="Изображение для анализа (JPG/PNG)"
+            ),
+            openapi.Parameter(
+                name="category",
+                in_=openapi.IN_FORM,
+                type=openapi.TYPE_INTEGER,
+                required=True,
+                description="ID категории (проекта)"
+            ),
+            openapi.Parameter(
+                name="axis",
+                in_=openapi.IN_FORM,
+                type=openapi.TYPE_STRING,
+                required=False,
+                description="Ось (например, 'X', 'Y', 'Z')"
+            ),
+            openapi.Parameter(
+                name="comment",
+                in_=openapi.IN_FORM,
+                type=openapi.TYPE_STRING,
+                required=False,
+                description="Комментарий к изображению"
+            ),
+        ],
+        responses={
+            201: ImageSerializer(),
+            400: "Некорректные данные",
+            401: "Не авторизован",
+            403: "Нет прав доступа"
+        }
+    )
     def post(self, request):
         serializer = ImageSerializer(data=request.data)
-
 
 
             #     image_instance.save()

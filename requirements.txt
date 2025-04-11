@@ -2,7 +2,10 @@ django
 djangorestframework
 djoser
 django-cors-headers
+django-storages
+drf_yasg
 psycopg
+boto3
 timm
 ultralytics
 numpy
