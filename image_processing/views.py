@@ -1,3 +1,8 @@
+import os
+from pathlib import Path
+
+from django.core.files.base import ContentFile
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
@@ -6,6 +11,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.exceptions import ValidationError
+from django.core.files.storage import default_storage
 
 from .models import Image
 from users.models import User
@@ -33,24 +39,54 @@ class ApiImage(APIView):
         serializer = ImageSerializer(images, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @swagger_auto_schema(responses={200: ImageSerializer(many=True)})
     def post(self, request):
         serializer = ImageSerializer(data=request.data)
-        if not serializer.is_valid():
+
+
+
+            #     image_instance.save()
+        #
+            # if get_result_maniqa('/home/andrew/PycharmProjects/AI_for_buildings/tmp/photo.jpg') < 0.2:
+            #     image_instance.delete()
+            #     raise ValidationError("Низкое качество изображения")
+
+            # if get_result_resnet(image_instance.image.path) != "concrete":
+            #     image_instance.delete()
+            #     raise ValidationError("Не бетон")
+        #
+        #     file_key = image_instance.image.name
+        #     get_result_yolo(file_key)
+        #
+        if serializer.is_valid():
             image_instance = serializer.save(uploaded_by=request.user)
+            image_file = image_instance.image
 
-            if get_result_maniqa(image_instance.image.path) < 0.2:
-                image_instance.delete()
-                raise ValidationError("Низкое качество изображения")
+            image_file.seek(0)
+            image_bytes = image_file.read()
 
-            if get_result_resnet(image_instance.image.path) != "concrete":
-                image_instance.delete()
-                raise ValidationError("Не бетон")
+            temp_path = f'tmp/{Path(image_file.name).name}'
+            default_storage.save(temp_path, ContentFile(image_bytes))
 
-            processed_image_path = get_result_yolo(image_instance.image.path)
-            image_instance.processed_image = processed_image_path
+            # YOLO
+            processed_image_path = get_result_yolo(temp_path)
+
+            with open(processed_image_path, 'rb') as processed_file:
+                processed_content = processed_file.read()
+                processed_filename = Path(image_file.name).name
+                image_instance.processed_image.save(processed_filename, ContentFile(processed_content))
+
             image_instance.save()
 
-            return Response(ImageSerializer(image_instance).data, status=status.HTTP_201_CREATED)
+            try:
+                default_storage.delete(temp_path)
+                os.remove(processed_image_path)
+                os.remove(temp_path)
+            except Exception as e:
+                print(f"Cleanup failed: {e}")
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
