@@ -24,6 +24,7 @@ urlpatterns = [
     #path('', include('upload.urls')),
     path('api/', include('users.urls')),
     path('api/', include('image_processing.urls')),
+    path('api/', include('projects.urls')),
     path('', include('frontend.urls')),
 ]
 

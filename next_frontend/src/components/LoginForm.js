@@ -24,7 +24,7 @@ export default function LoginForm() {
 
       if (response.ok) {
         localStorage.setItem('authToken', data.auth_token);
-        window.location.href = '/main';
+        window.location.href = '/upload';
       } else {
         setError(data?.detail || 'Ошибка входа');
       }

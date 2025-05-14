@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'djoser',
     'users.apps.UsersConfig',
     'image_processing.apps.ImageProcessingConfig',
+    'projects.apps.ProjectsConfig',
 
     #'upload.apps.UploadConfig'
 ]

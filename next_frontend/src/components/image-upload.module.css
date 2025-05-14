@@ -1,0 +1,408 @@
+/* Main Container */
+.container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #1a202c;
+    color: #e2e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+      "Helvetica Neue", sans-serif;
+  }
+  
+  /* Sidebar - identical to the previous page */
+  .sidebar {
+    width: 240px;
+    background-color: #171e2e;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 16px;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    position: fixed;
+    height: 100vh;
+    z-index: 10;
+  }
+  
+  .userInfo {
+    display: flex;
+    align-items: center;
+    padding: 12px 8px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 16px;
+  }
+  
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #2d3748;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+  }
+  
+  .userDetails {
+    overflow: hidden;
+  }
+  
+  .userName {
+    font-weight: 600;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .userPosition {
+    font-size: 0.8rem;
+    color: #a0aec0;
+  }
+  
+  .navigation {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .navButton {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+    color: #a0aec0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    font-size: 0.95rem;
+  }
+  
+  .navButton:hover {
+    background-color: rgba(66, 153, 225, 0.15);
+    color: #63b3ed;
+  }
+  
+  .navButton.active {
+    background-color: #2b6cb0;
+    color: white;
+  }
+  
+  .navButton span {
+    margin-left: 12px;
+  }
+  
+  .logoutButton {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: rgba(229, 62, 62, 0.1);
+    border: none;
+    border-radius: 8px;
+    color: #fc8181;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 16px;
+    text-align: left;
+  }
+  
+  .logoutButton:hover {
+    background-color: rgba(229, 62, 62, 0.2);
+  }
+  
+  .logoutButton span {
+    margin-left: 12px;
+  }
+  
+  /* Main Content */
+  .mainContent {
+    flex: 1;
+    margin-left: 240px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .header {
+    padding: 24px 32px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .pageTitle {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: white;
+  }
+  
+  /* Upload Container */
+  .uploadContainer {
+    flex: 1;
+    padding: 32px;
+    background-color: #1a202c;
+    background-image: linear-gradient(to bottom, rgba(26, 32, 44, 0.8), rgba(26, 32, 44, 0.95)), url("/main_image.png");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  
+  .uploadCard {
+    background-color: #1e2736;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+  }
+  
+  .uploadTitle {
+    margin: 0;
+    padding: 20px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: #2d3748;
+  }
+  
+  .uploadForm {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  /* File Input */
+  .fileInputWrapper {
+    margin-bottom: 8px;
+  }
+  
+  .fileInputContainer {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .fileInput {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+  
+  .fileInputLabel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background-color: #2d3748;
+    border: 1px dashed #4a5568;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .fileInputLabel:hover {
+    background-color: #3a4a63;
+    border-color: #63b3ed;
+  }
+  
+  .fileInputLabel span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Form Groups */
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .inputLabel {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #a0aec0;
+  }
+  
+  .selectInput {
+    padding: 12px;
+    background-color: #2d3748;
+    border: 1px solid #4a5568;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23a0aec0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+  }
+  
+  .selectInput:focus {
+    outline: none;
+    border-color: #63b3ed;
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
+  }
+  
+  .selectInput:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .textareaInput {
+    padding: 12px;
+    background-color: #2d3748;
+    border: 1px solid #4a5568;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    min-height: 120px;
+    resize: vertical;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+  
+  .textareaInput:focus {
+    outline: none;
+    border-color: #63b3ed;
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
+  }
+  
+  .textareaInput::placeholder {
+    color: #718096;
+  }
+  
+  /* Upload Button */
+  .uploadButton {
+    padding: 14px 20px;
+    background-color: #2b6cb0;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 8px;
+  }
+  
+  .uploadButton:hover:not(:disabled) {
+    background-color: #3182ce;
+    transform: translateY(-1px);
+  }
+  
+  .uploadButton:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  
+  .uploadButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  /* Message Box */
+  .messageBox {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .success {
+    background-color: rgba(72, 187, 120, 0.2);
+    color: #68d391;
+    border-left: 4px solid #48bb78;
+  }
+  
+  .error {
+    background-color: rgba(245, 101, 101, 0.2);
+    color: #fc8181;
+    border-left: 4px solid #f56565;
+  }
+  
+  .info {
+    background-color: rgba(66, 153, 225, 0.2);
+    color: #63b3ed;
+    border-left: 4px solid #4299e1;
+  }
+  
+  /* Loading */
+  .loadingContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    gap: 16px;
+  }
+  
+  .loadingSpinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border-top-color: #4299e1;
+    animation: spin 1s ease-in-out infinite;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .uploadContainer {
+      padding: 20px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+      padding: 16px;
+    }
+  
+    .mainContent {
+      margin-left: 0;
+    }
+  
+    .container {
+      flex-direction: column;
+    }
+  
+    .header {
+      padding: 16px;
+    }
+  
+    .uploadContainer {
+      padding: 16px;
+    }
+  
+    .uploadCard {
+      max-width: 100%;
+    }
+  }
+  

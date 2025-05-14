@@ -7,6 +7,8 @@ import styles from './ViewImages.module.css';
 export default function ViewImages() {
   const [images, setImages] = useState([]);
   const [userData, setUserData] = useState(null);
+  const [groups, setGroups] = useState([]); // Mock данные для групп
+  const [selectedGroup, setSelectedGroup] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -20,7 +22,18 @@ export default function ViewImages() {
 
     fetchImages(token);
     fetchUserData(token);
+    loadMockGroups();
   }, []);
+
+  const loadMockGroups = () => {
+    const mockGroups = [
+      { id: 1, name: "Проект А", description: "Описание проекта А" },
+      { id: 2, name: "Проект Б", description: "Описание проекта Б" },
+      { id: 3, name: "Проект В", description: "Описание проекта В" },
+    ];
+    setGroups(mockGroups);
+    setSelectedGroup(mockGroups[0]); // Выбираем первую группу по умолчанию
+  };
 
   const fetchUserData = async (token) => {
     try {
@@ -64,6 +77,15 @@ export default function ViewImages() {
     }
   };
 
+  const fetchProjectImages = async (projectId) => {
+    const response = await fetch(`http://localhost:8000/api/projects/${projectId}/`, {
+        headers: { Authorization: `Token ${token}` }
+    });
+    const data = await response.json();
+    setSelectedProject(data);
+    setProjectImages(data.images);
+  };
+
   const handleUploadImages = () => {
     router.push('/main'); 
   };
@@ -72,9 +94,13 @@ export default function ViewImages() {
     localStorage.removeItem('authToken');
     router.push('/login');
   };
+
+  const handleGroup= () => {
+    router.push('/groups'); 
+  };
   
   return (
-    <div className={styles.сontainer}>
+    <div className={styles.container}>
       <div className={styles.sidebar}>
         <p>Добро пожаловать, {userData ? `${userData.first_name} ${userData.last_name}` : ''}</p>
         <button onClick={handleLogout}>Выйти</button>
@@ -85,28 +111,49 @@ export default function ViewImages() {
           <button style={{backgroundColor: '#2077cd'}}>Посмотреть все изображения</button>
         )}
         {userData?.position === 'Инженер' && (
-          <button>Мои проекты</button>
-          
+          <button onClick={handleGroup}>Мои проекты</button>
         )}
       </div>
       <div className={styles.rightSection}>
-        <h1 className={styles.mainTitle}>Все изображения</h1>
-        <div className={styles.mainContent}>
-        {images.length > 0 ? (
-          <>
-            {images.map((image) => (
-              <div key={image.id} className={styles.imageItem}>
-                <img src={`http://localhost:8000${image.image}`} alt="Изображение" />
-                <p>ID: {image.id}</p>
-                <p>Дата: {new Date(image.created_at).toLocaleString()}</p>
+      <h1 className={styles.mainTitle}>Все изображения</h1>
+      <div className={styles.mainContent}>
+        <div className={styles.groupsColumn}>
+          <h3>Проекты</h3>
+          <div className={styles.scrollContainer}>
+            <ul className={styles.groupList}>
+              {groups.map(group => (
+                <li 
+                  key={group.id} 
+                  className={selectedGroup?.id === group.id ? styles.activeGroup : ''}
+                  onClick={() => setSelectedGroup(group)}
+                >
+                  {group.name}
+                  <span className={styles.groupDescription}>{group.description}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div className={styles.imagesColumn}>
+          <h3>Изображения {selectedGroup ? `в ${selectedGroup.name}` : ''}</h3>
+          <div className={styles.scrollContainer}>
+            {images.length > 0 ? (
+              <div className={styles.imageGrid}>
+                {images.map((image) => (
+                  <div key={image.id} className={styles.imageItem}>
+                    <img src={`http://localhost:8000${image.image}`} alt="Изображение" />
+                    <p>ID: {image.id}</p>
+                    <p>Дата: {new Date(image.created_at).toLocaleString()}</p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </>
-        ) : (
-          <p>Нет изображений.</p>
-        )}
+            ) : (
+              <p>Нет изображений.</p>
+            )}
+          </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

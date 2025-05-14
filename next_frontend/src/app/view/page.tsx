@@ -1,11 +1,9 @@
 'use client';
 
-import ViewImages from '../../components/ViewImages';
+import ImageGallery from "../../components/image-gallery"
 
-
-export default function View() {
-
-  return (
-      <ViewImages />
-  );
+export default function Page() {
+    return (
+        <ImageGallery />
+    );
 }

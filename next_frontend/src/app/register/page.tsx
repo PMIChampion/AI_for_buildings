@@ -1,52 +1,9 @@
-// frontend/src/app/register/page.js
-'use client';
+"use client"
 
-import RegisterForm from '../../components/RegisterForm';
+import RegisterForm from "../../components/register-form"
 
 export default function Register() {
   return (
-    <div
-      style={{
-        width: '100vw',
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        backgroundImage: "url('/auth.png')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-      <div
-        style={{
-          width: '40%',
-          height: '1000px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'rgba(255, 255, 255, 0)',
-          margin: 'calc((40vw - 250px) / 2) 0',
-        }}
-      >
         <RegisterForm />
-      </div>
-      <div
-        style={{
-          width: '56%',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
-          alignItems: 'flex-start',
-        }}
-      >
-        <h1 style={{ height: '100%', marginBottom: '20px', padding: '30px 17%', fontSize: 'min(50px, 7vh)' }}>
-          Выявление дефектов в бетонных конструкциях
-        </h1>
-        <p style={{ height: '100%', marginBottom: '70%', padding: '0 17%', fontSize: 'min(25px, 4vh)' }}>
-          Данный сайт поможет эффективно определить дефекты, обеспечивая при этом скорость и точность работы
-        </p>
-      </div>
-    </div>
   );
 }

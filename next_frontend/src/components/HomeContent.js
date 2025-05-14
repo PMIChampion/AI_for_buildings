@@ -8,7 +8,9 @@ export default function HomeContent() {
   const [userData, setUserData] = useState(null);
   const [uploadMessage, setUploadMessage] = useState('');
   const [comment, setComment] = useState('');
-  const [folder, setFolder] = useState('');
+  const [projects, setProjects] = useState([]);
+  const [selectedProjectId, setSelectedProjectId] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -58,10 +60,15 @@ export default function HomeContent() {
       return;
     }
 
+    if (!selectedProjectId) {
+      setUploadMessage('Выберите проект');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('image', file);
     formData.append('comment', comment);
-    /*formData.append('folder', folder);*/
+    formData.append('project_id', selectedProjectId);
 
     try {
       const response = await fetch('http://localhost:8000/api/image_processing/', {
@@ -75,16 +82,29 @@ export default function HomeContent() {
       if (response.ok) {
         setUploadMessage('Изображение успешно загружено!');
         setTimeout(() => setUploadMessage(''), 3000);
+        fileInput.value = '';
+        setComment('');
       } else {
         setUploadMessage('Ошибка загрузки изображения');
       }
     } catch (error) {
       setUploadMessage('Ошибка сети');
     }
+    finally {
+      setIsUploading(false);
+    }
   };
 
   const handleViewImages = () => {
     router.push('/view'); 
+  };
+  
+  const handleGroup= () => {
+    router.push('/groups'); 
+  };
+
+  const handleimg= () => {
+    router.push('/img'); 
   };
 
   return (
@@ -100,7 +120,11 @@ export default function HomeContent() {
           
         )}
         {userData?.position === 'Инженер' && (
-          <button>Мои проекты</button>
+          <button onClick={handleGroup}>Мои проекты</button>
+          
+        )}
+        {userData?.position === 'Инженер' && (
+          <button onClick={handleimg}>img</button>
           
         )}
       </div>
@@ -113,16 +137,25 @@ export default function HomeContent() {
               <div className={styles.uploadSection}>
                 <input type="file" id="imageUpload" />
                 <select
-                  className={styles.selectGroup}
+                value={selectedProjectId}
+                onChange={(e) => setSelectedProjectId(e.target.value)}
+                className={styles.selectGroup}
+                disabled={isUploading || projects.length === 0}
                 >
-                  <option value="">Выберите группу</option> 
+                  <option value="">Выберите проект</option>
+                  {projects.map(project => (
+                      <option key={project.id} value={project.id}>
+                          {project.name}
+                      </option>
+                  ))}
                 </select>
                 <textarea
                   placeholder="Напишите комментарий"
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
+                  disabled={isUploading}
                 />
-                <button onClick={handleUploadImage}>Загрузить изображение</button>
+                <button onClick={handleUploadImage} disabled={isUploading || !selectedProjectId}>Загрузить изображение</button>
               </div>
 
               {uploadMessage && <p>{uploadMessage}</p>}

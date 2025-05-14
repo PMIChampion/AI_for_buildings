@@ -77,10 +77,8 @@ def get_result_maniqa(file_path):
     file_path = file_path.lstrip("/\\")
 
     # Полный путь к изображению
-    image_path = absolute_path_for_image / "AI_for_buildings" / file_path
-
-    if not image_path.exists():
-        raise FileNotFoundError(f"Файл не найден: {image_path}")
+    # image_path = absolute_path_for_image / "AI_for_buildings" / file_path
+    image_path = '/' + file_path
 
     # config file
     config = Config({
@@ -124,4 +122,5 @@ def get_result_maniqa(file_path):
             avg_score += score
 
     avg_score /= config.num_crops
-    return f"Image {Img.img_name} score: {avg_score}" if avg_score > 0 else "Качество изображения низкое"
+    # return f"Image {Img.img_name} score: {avg_score}" if avg_score > 0 else "Качество изображения низкое"
+    return avg_score
