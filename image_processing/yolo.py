@@ -1,16 +1,16 @@
 from pathlib import Path
+
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 from ultralytics import YOLO
 import os
 
 # Относительные пути
 relative_path_for_model = Path("image_processing") / "models" / "best-3.pt"
-relative_path_for_image = Path("..") / "AI_for_buildings"
-relative_path_for_image_processed = Path("..") / "AI_for_buildings"
 
 # Абсолютные пути
 absolute_path_for_model = relative_path_for_model.resolve()
-absolute_path_for_image = relative_path_for_image.resolve()
-absolute_path_for_image_processed = relative_path_for_image_processed.resolve()
+
 
 
 def get_result_yolo(file):
@@ -34,19 +34,11 @@ def get_result_yolo(file):
         - The processed image is saved to the folder "../DSKBuildings/media/processed".
         - If the output folder does not exist, it is created automatically.
     """
-    # Удаляем начальный слэш, если он есть
-    if file.startswith("/"):
-        file = file[1:]
 
-    # Полный путь к изображению
-    # image_path = absolute_path_for_image / file
-    image_path = '/' + file
-
-    # Загрузка модели
     model = YOLO(str(absolute_path_for_model))
 
     # Обработка изображения
-    results = model([str(image_path)])
+    results = model([str(file)])
 
     # Путь к папке для сохранения обработанных изображений
     output_folder = Path("") / "media" / "processed"
