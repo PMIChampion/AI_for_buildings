@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import styles from "./image-upload.module.css"
-import { LogOut, Upload, Grid, FolderOpen, User, ImageIcon } from "lucide-react"
+import { LogOut, Upload, Grid, FolderOpen, User, AlertCircle } from "lucide-react"
+import Sidebar from "../components/Sidebar"
 
 export default function ImageUpload() {
   const [userData, setUserData] = useState(null)
@@ -107,7 +108,7 @@ export default function ImageUpload() {
     formData.append("image", file)
     formData.append("comment", comment)
     formData.append("category", selectedProjectId)
-    formData.append("status", commentStatus ? "true" : "false"); // если это зависит от логики
+    formData.append("status", "true");
 
 
     for (let pair of formData.entries()) {
@@ -143,55 +144,10 @@ export default function ImageUpload() {
     }
   }
 
-  const handleViewImages = () => {
-    router.push("/view")
-  }
-
-  const handleGroup = () => {
-    router.push("/groups")
-  }
-
 
   return (
     <div className={styles.container}>
-      {/* Sidebar - identical to the previous page */}
-      <aside className={styles.sidebar}>
-        <div className={styles.userInfo}>
-          <div className={styles.avatar}>
-            <User size={24} />
-          </div>
-          <div className={styles.userDetails}>
-            <p className={styles.userName}>{userData ? `${userData.first_name} ${userData.last_name}` : "Гость"}</p>
-            <span className={styles.userPosition}>{userData?.position || ""}</span>
-          </div>
-        </div>
-
-        <nav className={styles.navigation}>
-          <button className={styles.navButton} onClick={handleGroup}>
-            <FolderOpen size={18} />
-            <span>Мои проекты</span>
-          </button>
-
-          <button className={styles.navButton} onClick={handleViewImages}>
-            <Grid size={18} />
-            <span>Все изображения</span>
-          </button>
-
-          {userData?.position === "Инженер" && (
-            <button className={`${styles.navButton} ${styles.active}`}>
-              <Upload size={18} />
-              <span>Выгрузка изображений</span>
-            </button>
-          )}
-
-        </nav>
-
-        <button className={styles.logoutButton} onClick={handleLogout}>
-          <LogOut size={18} />
-          <span>Выйти</span>
-        </button>
-      </aside>
-
+      <Sidebar userData={userData} onLogout={handleLogout} />
       {/* Main Content */}
       <main className={styles.mainContent}>
         <header className={styles.header}>

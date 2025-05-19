@@ -7,7 +7,6 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
->>>>>>> main
 from projects.models import Project
 from projects.serializers import ProjectSerializer
 

@@ -2,7 +2,8 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react"
 import styles from "./image-gallery.module.css"
-import { LogOut, Upload, Grid, FolderOpen, User } from "lucide-react"
+import { LogOut, Upload, Grid, FolderOpen, User, AlertCircle } from "lucide-react"
+import Sidebar from "../components/Sidebar"
 
 export default function ImageGallery() {
 
@@ -13,19 +14,23 @@ export default function ImageGallery() {
     const [selectedGroup, setSelectedGroup] = useState(null);
     const router = useRouter();
   
-    useEffect(() => {
-      const token = localStorage.getItem('authToken');
-      
-  
-      if (!token) {
-        router.push('/login');
-        return;
-      } 
-  
-      fetchImages(token);
-      fetchUserData(token);
-      fetchProjects(token);
-    }, []);
+      useEffect(() => {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          router.push('/login');
+          return;
+        }
+
+        fetchUserData(token);
+        fetchProjects(token);
+      }, []);
+
+      useEffect(() => {
+        const token = localStorage.getItem('authToken');
+        if (selectedGroup && token) {
+          fetchImagesByProject(selectedGroup.id, token);
+        }
+      }, [selectedGroup]);
   
     const fetchProjects = async (token) => {
       try {
@@ -72,16 +77,17 @@ export default function ImageGallery() {
       }
     };
   
-    const fetchImages = async (token) => {
+    
+    const fetchImagesByProject = async (projectId, token) => {
       try {
-        const response = await fetch('http://localhost:8000/api/image_processing/', {
+        const response = await fetch(`http://localhost:8000/api/image_processing/${projectId}/`, {
           method: 'GET',
           headers: {
             Authorization: `Token ${token}`,
             'Content-Type': 'application/json',
           },
         });
-  
+
         if (response.ok) {
           const data = await response.json();
           setImages(data);
@@ -89,30 +95,14 @@ export default function ImageGallery() {
           setImages([]);
         }
       } catch (error) {
-        console.error('Ошибка загрузки изображений:', error);
+        console.error('Ошибка загрузки изображений проекта:', error);
+        setImages([]);
       }
-    };
-  
-    const fetchProjectImages = async (projectId) => {
-      const response = await fetch(`http://localhost:8000/api/projects/${projectId}/`, {
-          headers: { Authorization: `Token ${token}` }
-      });
-      const data = await response.json();
-      setSelectedProject(data);
-      setProjectImages(data.images);
-    };
-  
-    const handleUploadImages = () => {
-      router.push('/upload'); 
     };
   
     const handleLogout = () => {
       localStorage.removeItem('authToken');
       router.push('/login');
-    };
-  
-    const handleGroup= () => {
-      router.push('/groups'); 
     };
     
     const handleImageClick = (image) => {
@@ -125,43 +115,7 @@ export default function ImageGallery() {
 
   return (
     <div className={styles.container}>
-      {/* Sidebar */}
-      <aside className={styles.sidebar}>
-        <div className={styles.userInfo}>
-          <div className={styles.avatar}>
-            <User size={24} />
-          </div>
-          <div className={styles.userDetails}>
-            <p className={styles.userName}>{userData ? `${userData.first_name} ${userData.last_name}` : "Гость"}</p>
-            <span className={styles.userPosition}>{userData?.position || ""}</span>
-          </div>
-        </div>
-
-        <nav className={styles.navigation}>
-          <button className={styles.navButton} onClick={handleGroup}>
-            <FolderOpen size={18} />
-            <span>Мои проекты</span>
-          </button>
-
-          <button className={`${styles.navButton} ${styles.active}`}>
-            <Grid size={18} />
-            <span>Все изображения</span>
-          </button>
-
-          {userData?.position === "Инженер" && (
-            <button className={styles.navButton} onClick={handleUploadImages}>
-              <Upload size={18} />
-              <span>Выгрузка изображений</span>
-            </button>
-          )}
-        </nav>
-
-        <button className={styles.logoutButton} onClick={handleLogout}>
-          <LogOut size={18} />
-          <span>Выйти</span>
-        </button>
-      </aside>
-
+      <Sidebar userData={userData} onLogout={handleLogout} />
       {/* Main Content */}
       <main className={styles.mainContent}>
         <header className={styles.header}>
@@ -225,10 +179,10 @@ export default function ImageGallery() {
       {/* Image Modal */}
       {selectedImage && (
         <div className={styles.modal} onClick={closeModal}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <button className={styles.closeButton} onClick={closeModal}>
+          <button className={styles.closeButton} onClick={closeModal}>
               ×
             </button>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <img
               src={`http://localhost:8000${selectedImage.image}`}
               alt={`Изображение ${selectedImage.id}`}
@@ -237,6 +191,14 @@ export default function ImageGallery() {
             <div className={styles.modalInfo}>
               <p>ID: {selectedImage.id}</p>
               <p>Дата: {new Date(selectedImage.created_at).toLocaleString("ru-RU")}</p>
+              {selectedImage.uploaded_by && (
+                <p>
+                  Загрузил: {selectedImage.uploaded_by.first_name} {selectedImage.uploaded_by.last_name}
+                </p>
+              )}
+              {selectedImage.comment && (
+                <p>Описание: {selectedImage.comment}</p>
+              )}
             </div>
           </div>
         </div>

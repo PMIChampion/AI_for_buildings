@@ -119,8 +119,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -158,18 +158,20 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+#DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
-AWS_S3_ENDPOINT_URL = "http://217.12.38.224:9000"
-AWS_ACCESS_KEY_ID = "PmDu80D7EE4xhQ10Bnd0"
-AWS_SECRET_ACCESS_KEY = "wd2AwnoVOkTuBGi702QRB4yw4FvguCjPR64u2ObA"
-AWS_MEDIA_BUCKET_NAME = "media"
-AWS_STORAGE_BUCKET_NAME = AWS_MEDIA_BUCKET_NAME
-AWS_QUERYSTRING_AUTH = False
-AWS_S3_ADDRESSING_STYLE = "path"
+#AWS_S3_ENDPOINT_URL = "http://217.12.38.224:9000"
+#AWS_ACCESS_KEY_ID = "PmDu80D7EE4xhQ10Bnd0"
+#AWS_SECRET_ACCESS_KEY = "wd2AwnoVOkTuBGi702QRB4yw4FvguCjPR64u2ObA"
+#AWS_MEDIA_BUCKET_NAME = "media"
+#AWS_STORAGE_BUCKET_NAME = AWS_MEDIA_BUCKET_NAME
+#AWS_QUERYSTRING_AUTH = False
+#AWS_S3_ADDRESSING_STYLE = "path"
 
-MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_MEDIA_BUCKET_NAME}/"
-
+#MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_MEDIA_BUCKET_NAME}/"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

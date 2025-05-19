@@ -3,7 +3,8 @@
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import styles from "./project-groups.module.css"
-import { LogOut, Upload, Grid, FolderOpen, User, Plus, X, FileImage } from "lucide-react"
+import {Plus, X, FileImage} from "lucide-react"
+import Sidebar from "../components/Sidebar"
 
 export default function ProjectGroups() {
   const [projects, setProjects] = useState([])
@@ -15,6 +16,8 @@ export default function ProjectGroups() {
   const [previewUrl, setPreviewUrl] = useState(null)
   const [isCreating, setIsCreating] = useState(false)
   const [userData, setUserData] = useState(null)
+  const [selectedProject, setSelectedProject] = useState(null);
+
   const router = useRouter()
 
   useEffect(() => {
@@ -104,26 +107,36 @@ export default function ProjectGroups() {
   }
 
   const handleViewProject = (projectId) => {
-    router.push(`/view?project=${projectId}`)
-  }
+    const project = projects.find(p => p.id === projectId);
+    setSelectedProject(project);
+  };
 
-  const handleViewImages = () => {
-    router.push("/view")
-  }
+  const closeModal = () => {
+    setSelectedProject(null);
+  };
+
+  const handleNavigateToImages = (projectId) => {
+    router.push(`/view?project=${projectId}`)
+  };
+    //const handleViewProject = (projectId) => {
+      //router.push(`/view?project=${projectId}`)
+    //}
+
+  const handleDeleteProject = async (projectId) => {
+    await deleteProjectById(projectId);
+    setProjects(projects.filter(p => p.id !== projectId));
+    closeModal();
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("authToken")
     router.push("/login")
   }
 
-  const handleUploadImages = () => {
-    router.push("/upload")
-  }
 
   const toggleCreateForm = () => {
     setIsCreating(!isCreating)
     if (isCreating) {
-      // Reset form when closing
       setNewProject({ name: "", description: "", blueprint_image: null })
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl)
@@ -134,43 +147,7 @@ export default function ProjectGroups() {
 
   return (
     <div className={styles.container}>
-      {/* Sidebar - identical to the previous pages */}
-      <aside className={styles.sidebar}>
-        <div className={styles.userInfo}>
-          <div className={styles.avatar}>
-            <User size={24} />
-          </div>
-          <div className={styles.userDetails}>
-            <p className={styles.userName}>{userData ? `${userData.first_name} ${userData.last_name}` : "Гость"}</p>
-            <span className={styles.userPosition}>{userData?.position || ""}</span>
-          </div>
-        </div>
-
-        <nav className={styles.navigation}>
-          <button className={`${styles.navButton} ${styles.active}`}>
-            <FolderOpen size={18} />
-            <span>Мои проекты</span>
-          </button>
-
-          <button className={styles.navButton} onClick={handleViewImages}>
-            <Grid size={18} />
-            <span>Все изображения</span>
-          </button>
-
-          {userData?.position === "Инженер" && (
-            <button className={styles.navButton} onClick={handleUploadImages}>
-              <Upload size={18} />
-              <span>Выгрузка изображений</span>
-            </button>
-          )}
-        </nav>
-
-        <button className={styles.logoutButton} onClick={handleLogout}>
-          <LogOut size={18} />
-          <span>Выйти</span>
-        </button>
-      </aside>
-
+      <Sidebar userData={userData} onLogout={handleLogout} />
       {/* Main Content */}
       <main className={styles.mainContent}>
         <header className={styles.header}>
@@ -269,7 +246,6 @@ export default function ProjectGroups() {
                   <div key={project.id} className={styles.projectCard} onClick={() => handleViewProject(project.id)}>
                     <div className={styles.projectCardContent}>
                       <h3 className={styles.projectName}>{project.name}</h3>
-                      <p className={styles.projectDescription}>{project.description || "Нет описания"}</p>
                     </div>
                     {project.blueprint_image && (
                       <div className={styles.blueprintContainer}>
@@ -295,6 +271,48 @@ export default function ProjectGroups() {
               </div>
             )}
           </div>
+          {selectedProject && (
+            <div className={styles.modal}>
+              <div className={styles.modalContent}>
+                <button className={styles.closeButton} onClick={closeModal}>×</button>
+
+                {selectedProject.blueprint_image && (
+                  <img
+                    src={`http://localhost:8000${selectedProject.blueprint_image}`}
+                    alt="Чертеж проекта"
+                    className={styles.modalImage}
+                  />
+                )}
+
+                <div className={styles.modalInfo}>
+                  <h2>{selectedProject.name}</h2>
+                  <p><strong>Описание:</strong> {selectedProject.description || "Нет описания"}</p>
+                  <p><strong>Изображений:</strong> {selectedProject.image_count || 0}</p>
+
+                  <div style={{ marginTop: "1rem", display: "flex", gap: "1rem" }}>
+                    {userData?.position === "Инженер" && (
+                      <button
+                        onClick={() => handleNavigateToImages(selectedProject.id)}
+                        className={styles.submitButton}
+                      >
+                        Перейти к изображениям
+                      </button>
+                    )}
+
+                    {userData?.position === "Инженер" && (
+                      <button
+                        onClick={() => handleDeleteProject(selectedProject.id)}
+                        className={styles.logoutButton}
+                      >
+                        Удалить проект
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
         </div>
       </main>
     </div>

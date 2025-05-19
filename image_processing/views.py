@@ -81,7 +81,7 @@ class ApiImage(APIView):
             403: "Нет прав доступа"
         }
     )
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         serializer = ImageSerializer(data=request.data)
 
 
@@ -105,8 +105,13 @@ class ApiImage(APIView):
             image_file.seek(0)
             image_bytes = image_file.read()
 
-            temp_path = f'tmp/{Path(image_file.name).name}'
-            default_storage.save(temp_path, ContentFile(image_bytes))
+            #temp_path = f'tmp/{Path(image_file.name).name}'
+            #default_storage.save(temp_path, ContentFile(image_bytes))
+
+            os.makedirs("tmp", exist_ok=True)
+            temp_path = os.path.join("tmp", Path(image_file.name).name)
+            with open(temp_path, 'wb') as f:
+                f.write(image_bytes)
 
             # YOLO
             processed_image_path = get_result_yolo(temp_path)
