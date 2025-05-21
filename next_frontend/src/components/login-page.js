@@ -29,7 +29,7 @@ export default function LoginPage() {
 
       if (response.ok) {
         localStorage.setItem("authToken", data.auth_token)
-        window.location.href = "/upload"
+        window.location.href = "/dashboard/upload"
       } else {
         setError(data?.detail || "Неверный email или пароль")
       }

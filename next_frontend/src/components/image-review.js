@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import styles from "./image-review.module.css"
 import { CheckCircle, XCircle, AlertCircle, MessageSquare } from "lucide-react"
-import Sidebar from "../components/Sidebar"
+
 
 export default function ImageReview() {
   const [userData, setUserData] = useState(null)
@@ -143,10 +143,7 @@ export default function ImageReview() {
   }
 
   return (
-    <div className={styles.container}>
-      <Sidebar userData={userData} onLogout={handleLogout} />
-      {/* Main Content */}
-      <main className={styles.mainContent}>
+      <>
         <header className={styles.header}>
           <h1 className={styles.pageTitle}>Проверка изображений</h1>
         </header>
@@ -234,9 +231,7 @@ export default function ImageReview() {
             </div>
           </section>
         </div>
-      </main>
 
-      {/* Image Modal */}
       {selectedImage && (
         <div className={styles.modal} onClick={closeModal}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -299,6 +294,6 @@ export default function ImageReview() {
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import ProjectGroups from '../../components/project-groups';
+import ProjectGroups from '../../../components/project-groups';
 
 
 export default function View() {

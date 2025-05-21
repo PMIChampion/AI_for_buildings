@@ -2,15 +2,14 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react"
 import styles from "./image-gallery.module.css"
-import { LogOut, Upload, Grid, FolderOpen, User, AlertCircle } from "lucide-react"
-import Sidebar from "../components/Sidebar"
+
 
 export default function ImageGallery() {
 
   const [selectedImage, setSelectedImage] = useState(null)
   const [images, setImages] = useState([]);
     const [userData, setUserData] = useState(null);
-    const [groups, setGroups] = useState([]); // Mock данные для групп
+    const [groups, setGroups] = useState([]);
     const [selectedGroup, setSelectedGroup] = useState(null);
     const router = useRouter();
   
@@ -114,95 +113,90 @@ export default function ImageGallery() {
   }
 
   return (
-    <div className={styles.container}>
-      <Sidebar userData={userData} onLogout={handleLogout} />
-      {/* Main Content */}
-      <main className={styles.mainContent}>
-        <header className={styles.header}>
-          <h1 className={styles.pageTitle}>Все изображения</h1>
-        </header>
+    <>
+      <header className={styles.header}>
+        <h1 className={styles.pageTitle}>Все изображения</h1>
+      </header>
 
-        <div className={styles.contentGrid}>
-          {/* Projects Column */}
-          <section className={styles.projectsPanel}>
-            <h2 className={styles.panelTitle}>Проекты</h2>
-            <div className={styles.projectsList}>
-              {groups.map((group) => (
-                <div
-                  key={group.id}
-                  className={`${styles.projectCard} ${selectedGroup?.id === group.id ? styles.activeProject : ""}`}
-                  onClick={() => setSelectedGroup(group)}
-                >
-                  <h3 className={styles.projectName}>{group.name}</h3>
-                  {group.description && <p className={styles.projectDescription}>{group.description}</p>}
-                </div>
-              ))}
-            </div>
-          </section>
+      <div className={styles.contentGrid}>
+        {/* Projects Column */}
+        <section className={styles.projectsPanel}>
+          <h2 className={styles.panelTitle}>Проекты</h2>
+          <div className={styles.projectsList}>
+            {groups.map((group) => (
+              <div
+                key={group.id}
+                className={`${styles.projectCard} ${selectedGroup?.id === group.id ? styles.activeProject : ""}`}
+                onClick={() => setSelectedGroup(group)}
+              >
+                <h3 className={styles.projectName}>{group.name}</h3>
+                {group.description && <p className={styles.projectDescription}>{group.description}</p>}
+              </div>
+            ))}
+          </div>
+        </section>
 
-          {/* Images Column */}
-          <section className={styles.imagesPanel}>
-            <h2 className={styles.panelTitle}>Изображения {selectedGroup ? `в ${selectedGroup.name}` : ""}</h2>
+        {/* Images Column */}
+        <section className={styles.imagesPanel}>
+          <h2 className={styles.panelTitle}>Изображения {selectedGroup ? `в ${selectedGroup.name}` : ""}</h2>
 
-            <div className={styles.imagesContainer}>
-              {images.length > 0 ? (
-                <div className={styles.imagesGrid}>
-                  {images.map((image) => (
-                    <div key={image.id} className={styles.imageCard} onClick={() => handleImageClick(image)}>
-                      <div className={styles.imageWrapper}>
-                        <img
-                          src={`http://localhost:8000${image.image}`}
-                          alt={`Изображение ${image.id}`}
-                          className={styles.image}
-                        />
-                      </div>
-                      <div className={styles.imageInfo}>
-                        <p className={styles.imageId}>ID: {image.id}</p>
-                        <p className={styles.imageDate}>{new Date(image.created_at).toLocaleDateString("ru-RU")}</p>
-                      </div>
+          <div className={styles.imagesContainer}>
+            {images.length > 0 ? (
+              <div className={styles.imagesGrid}>
+                {images.map((image) => (
+                  <div key={image.id} className={styles.imageCard} onClick={() => handleImageClick(image)}>
+                    <div className={styles.imageWrapper}>
+                      <img
+                        src={`http://localhost:8000${image.image}`}
+                        alt={`Изображение ${image.id}`}
+                        className={styles.image}
+                      />
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className={styles.noImages}>
-                  <p>Нет доступных изображений</p>
-                  {!selectedGroup && (
-                    <p className={styles.selectProjectHint}>Выберите проект для просмотра изображений</p>
-                  )}
-                </div>
-              )}
-            </div>
-          </section>
-        </div>
-      </main>
+                    <div className={styles.imageInfo}>
+                      <p className={styles.imageId}>ID: {image.id}</p>
+                      <p className={styles.imageDate}>{new Date(image.created_at).toLocaleDateString("ru-RU")}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className={styles.noImages}>
+                <p>Нет доступных изображений</p>
+                {!selectedGroup && (
+                  <p className={styles.selectProjectHint}>Выберите проект для просмотра изображений</p>
+                )}
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
 
-      {/* Image Modal */}
-      {selectedImage && (
-        <div className={styles.modal} onClick={closeModal}>
-          <button className={styles.closeButton} onClick={closeModal}>
-              ×
-            </button>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <img
-              src={`http://localhost:8000${selectedImage.image}`}
-              alt={`Изображение ${selectedImage.id}`}
-              className={styles.modalImage}
-            />
-            <div className={styles.modalInfo}>
-              <p>ID: {selectedImage.id}</p>
-              <p>Дата: {new Date(selectedImage.created_at).toLocaleString("ru-RU")}</p>
-              {selectedImage.uploaded_by && (
-                <p>
-                  Загрузил: {selectedImage.uploaded_by.first_name} {selectedImage.uploaded_by.last_name}
-                </p>
-              )}
-              {selectedImage.comment && (
-                <p>Описание: {selectedImage.comment}</p>
-              )}
-            </div>
+    {selectedImage && (
+      <div className={styles.modal} onClick={closeModal}>
+        <button className={styles.closeButton} onClick={closeModal}>
+            ×
+          </button>
+        <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+          <img
+            src={`http://localhost:8000${selectedImage.image}`}
+            alt={`Изображение ${selectedImage.id}`}
+            className={styles.modalImage}
+          />
+          <div className={styles.modalInfo}>
+            <p>ID: {selectedImage.id}</p>
+            <p>Дата: {new Date(selectedImage.created_at).toLocaleString("ru-RU")}</p>
+            {selectedImage.uploaded_by && (
+              <p>
+                Загрузил: {selectedImage.uploaded_by.first_name} {selectedImage.uploaded_by.last_name}
+              </p>
+            )}
+            {selectedImage.comment && (
+              <p>Описание: {selectedImage.comment}</p>
+            )}
           </div>
         </div>
-      )}
-    </div>
+      </div>
+    )}
+    </>
   )
 }

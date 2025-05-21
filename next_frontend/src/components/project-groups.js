@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import styles from "./project-groups.module.css"
 import {Plus, X, FileImage} from "lucide-react"
-import Sidebar from "../components/Sidebar"
 
 export default function ProjectGroups() {
   const [projects, setProjects] = useState([])
@@ -146,10 +145,7 @@ export default function ProjectGroups() {
   }
 
   return (
-    <div className={styles.container}>
-      <Sidebar userData={userData} onLogout={handleLogout} />
-      {/* Main Content */}
-      <main className={styles.mainContent}>
+      <>
         <header className={styles.header}>
           <h1 className={styles.pageTitle}>Мои проекты</h1>
         </header>
@@ -314,7 +310,6 @@ export default function ProjectGroups() {
           )}
 
         </div>
-      </main>
-    </div>
+      </>
   )
 }

@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import styles from "./image-upload.module.css"
-import { LogOut, Upload, Grid, FolderOpen, User, AlertCircle } from "lucide-react"
-import Sidebar from "../components/Sidebar"
+import { Upload } from "lucide-react"
+
 
 export default function ImageUpload() {
   const [userData, setUserData] = useState(null)
@@ -67,11 +67,6 @@ export default function ImageUpload() {
     } catch (error) {
       console.error("Ошибка загрузки проектов:", error)
     }
-  }
-
-  const handleLogout = () => {
-    localStorage.removeItem("authToken")
-    router.push("/login")
   }
 
   const handleFileChange = (e) => {
@@ -146,90 +141,86 @@ export default function ImageUpload() {
 
 
   return (
-    <div className={styles.container}>
-      <Sidebar userData={userData} onLogout={handleLogout} />
-      {/* Main Content */}
-      <main className={styles.mainContent}>
-        <header className={styles.header}>
-          <h1 className={styles.pageTitle}>Выгрузка изображения</h1>
-        </header>
+    <>
+      <header className={styles.header}>
+        <h1 className={styles.pageTitle}>Выгрузка изображения</h1>
+      </header>
 
-        <div className={styles.uploadContainer}>
-          {userData ? (
-            <div className={styles.uploadCard}>
-              <h2 className={styles.uploadTitle}>Загрузить новое изображение</h2>
+      <div className={styles.uploadContainer}>
+        {userData ? (
+          <div className={styles.uploadCard}>
+            <h2 className={styles.uploadTitle}>Загрузить новое изображение</h2>
 
-              <div className={styles.uploadForm}>
-                <div className={styles.fileInputWrapper}>
-                  <div className={styles.fileInputContainer}>
-                    <input
-                      type="file"
-                      id="imageUpload"
-                      className={styles.fileInput}
-                      onChange={handleFileChange}
-                      accept="image/*"
-                      disabled={isUploading}
-                    />
-                    <label htmlFor="imageUpload" className={styles.fileInputLabel}>
-                      <Upload size={20} />
-                      <span>{selectedFileName || "Выберите файл"}</span>
-                    </label>
-                  </div>
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="projectSelect" className={styles.inputLabel}>
-                    Проект
-                  </label>
-                  <select
-                    id="projectSelect"
-                    value={selectedProjectId}
-                    onChange={(e) => setSelectedProjectId(e.target.value)}
-                    className={styles.selectInput}
-                    disabled={isUploading || projects.length === 0}
-                  >
-                    <option value="">Выберите проект</option>
-                    {projects.map((project) => (
-                      <option key={project.id} value={project.id}>
-                        {project.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="commentInput" className={styles.inputLabel}>
-                    Комментарий
-                  </label>
-                  <textarea
-                    id="commentInput"
-                    placeholder="Напишите комментарий к изображению"
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    className={styles.textareaInput}
+            <div className={styles.uploadForm}>
+              <div className={styles.fileInputWrapper}>
+                <div className={styles.fileInputContainer}>
+                  <input
+                    type="file"
+                    id="imageUpload"
+                    className={styles.fileInput}
+                    onChange={handleFileChange}
+                    accept="image/*"
                     disabled={isUploading}
                   />
+                  <label htmlFor="imageUpload" className={styles.fileInputLabel}>
+                    <Upload size={20} />
+                    <span>{selectedFileName || "Выберите файл"}</span>
+                  </label>
                 </div>
-
-                <button
-                  onClick={handleUploadImage}
-                  disabled={isUploading || !selectedProjectId}
-                  className={styles.uploadButton}
-                >
-                  {isUploading ? "Загрузка..." : "Загрузить изображение"}
-                </button>
-
-                {uploadMessage && <div className={`${styles.messageBox} ${styles[messageType]}`}>{uploadMessage}</div>}
               </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="projectSelect" className={styles.inputLabel}>
+                  Проект
+                </label>
+                <select
+                  id="projectSelect"
+                  value={selectedProjectId}
+                  onChange={(e) => setSelectedProjectId(e.target.value)}
+                  className={styles.selectInput}
+                  disabled={isUploading || projects.length === 0}
+                >
+                  <option value="">Выберите проект</option>
+                  {projects.map((project) => (
+                    <option key={project.id} value={project.id}>
+                      {project.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="commentInput" className={styles.inputLabel}>
+                  Комментарий
+                </label>
+                <textarea
+                  id="commentInput"
+                  placeholder="Напишите комментарий к изображению"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  className={styles.textareaInput}
+                  disabled={isUploading}
+                />
+              </div>
+
+              <button
+                onClick={handleUploadImage}
+                disabled={isUploading || !selectedProjectId}
+                className={styles.uploadButton}
+              >
+                {isUploading ? "Загрузка..." : "Загрузить изображение"}
+              </button>
+
+              {uploadMessage && <div className={`${styles.messageBox} ${styles[messageType]}`}>{uploadMessage}</div>}
             </div>
-          ) : (
-            <div className={styles.loadingContainer}>
-              <div className={styles.loadingSpinner}></div>
-              <p>Загрузка данных пользователя...</p>
-            </div>
-          )}
-        </div>
-      </main>
-    </div>
+          </div>
+        ) : (
+          <div className={styles.loadingContainer}>
+            <div className={styles.loadingSpinner}></div>
+            <p>Загрузка данных пользователя...</p>
+          </div>
+        )}
+      </div>
+    </>
   )
 }

@@ -1,11 +1,38 @@
 "use client"
 
-import { User, FolderOpen, Grid, Upload, AlertCircle, LogOut } from "lucide-react"
-import styles from "./sidebar.module.css"  
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { User, FolderOpen, Grid, Upload, AlertCircle, LogOut } from "lucide-react"
+import styles from "./sidebar.module.css"
 
-export default function Sidebar({ userData, onLogout }) {
+export default function Sidebar({ onLogout }) {
+  const [userData, setUserData] = useState(null)
   const router = useRouter()
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken")
+    if (!token) {
+      router.push("/login")
+      return
+    }
+
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/auth/users/me/", {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        })
+        if (!res.ok) throw new Error("Ошибка загрузки профиля")
+        const data = await res.json()
+        setUserData(data)
+      } catch (error) {
+        console.error("Ошибка получения пользователя в Sidebar:", error)
+      }
+    }
+
+    fetchUser()
+  }, [])
 
   return (
     <aside className={styles.sidebar}>
@@ -22,16 +49,16 @@ export default function Sidebar({ userData, onLogout }) {
       <nav className={styles.navigation}>
         {userData?.position === "Инженер" && (
             <button
-            className={`${styles.navButton} ${router.pathname === "/groups" ? styles.active : ""}`}
-            onClick={() => router.push("/groups")}
+            className={`${styles.navButton} ${router.pathname === "/dashboard/groups" ? styles.active : ""}`}
+            onClick={() => router.push("/dashboard/groups")}
             >
             <FolderOpen size={18} />
             <span>Мои проекты</span>
             </button>
         )}
         {userData?.position === "Инженер" && (
-            <button className={`${styles.navButton} ${router.pathname === "/view" ? styles.active : ""}`}
-            onClick={() => router.push("/view")}
+            <button className={`${styles.navButton} ${router.pathname === "/dashboard/view" ? styles.active : ""}`}
+            onClick={() => router.push("/dashboard/view")}
             >
             <Grid size={18} />
             <span>Все изображения</span>
@@ -39,8 +66,8 @@ export default function Sidebar({ userData, onLogout }) {
         )}
 
         <button
-        className={`${styles.navButton} ${router.pathname === "/upload" ? styles.active : ""}`}
-        onClick={() => router.push("/upload")}
+        className={`${styles.navButton} ${router.pathname === "/dashboard/upload" ? styles.active : ""}`}
+        onClick={() => router.push("/dashboard/upload")}
         >
           <Upload size={18} />
           <span>Выгрузка изображений</span>
@@ -48,8 +75,8 @@ export default function Sidebar({ userData, onLogout }) {
 
         {userData?.position === "Инженер" && (
             <button
-            className={`${styles.navButton} ${router.pathname === "/review" ? styles.active : ""}`}
-            onClick={() => router.push("/review")}
+            className={`${styles.navButton} ${router.pathname === "/dashboard/review" ? styles.active : ""}`}
+            onClick={() => router.push("/dashboard/review")}
             >
             <AlertCircle size={18} />
             <span>Проверка изображений</span>
