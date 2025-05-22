@@ -119,8 +119,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -160,9 +160,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
-AWS_S3_ENDPOINT_URL = "http://217.12.38.224:9000"
-AWS_ACCESS_KEY_ID = "PmDu80D7EE4xhQ10Bnd0"
-AWS_SECRET_ACCESS_KEY = "wd2AwnoVOkTuBGi702QRB4yw4FvguCjPR64u2ObA"
+AWS_S3_ENDPOINT_URL = "http://45.147.179.119:9000"
+AWS_ACCESS_KEY_ID = "Hr4ywpEv8XdBNEUv2Ptb"
+AWS_SECRET_ACCESS_KEY = "nbbZVfTktcncK9YYwSunslN4uBIrPhauXTqhldBf"
 AWS_MEDIA_BUCKET_NAME = "media"
 AWS_STORAGE_BUCKET_NAME = AWS_MEDIA_BUCKET_NAME
 AWS_QUERYSTRING_AUTH = False

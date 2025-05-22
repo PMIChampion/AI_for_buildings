@@ -84,20 +84,6 @@ class ApiImage(APIView):
     def post(self, request):
         serializer = ImageSerializer(data=request.data)
 
-
-            #     image_instance.save()
-        #
-            # if get_result_maniqa('/home/andrew/PycharmProjects/AI_for_buildings/tmp/photo.jpg') < 0.2:
-            #     image_instance.delete()
-            #     raise ValidationError("Низкое качество изображения")
-
-            # if get_result_resnet(image_instance.image.path) != "concrete":
-            #     image_instance.delete()
-            #     raise ValidationError("Не бетон")
-        #
-        #     file_key = image_instance.image.name
-        #     get_result_yolo(file_key)
-        #
         if serializer.is_valid():
             image_instance = serializer.save(uploaded_by=request.user)
             image_file = image_instance.image
@@ -107,6 +93,13 @@ class ApiImage(APIView):
 
             temp_path = f'tmp/{Path(image_file.name).name}'
             default_storage.save(temp_path, ContentFile(image_bytes))
+
+
+            if get_result_maniqa(f"/home/andrew/PycharmProjects/AI_for_buildings/{temp_path}") < 0.2:
+                return Response("Изображение должно быть четким", status=status.HTTP_400_BAD_REQUEST)
+
+            if get_result_resnet(f"/home/andrew/PycharmProjects/AI_for_buildings/{temp_path}") != "concrete":
+                return Response("Бетон не найден", status=status.HTTP_400_BAD_REQUEST)
 
             # YOLO
             processed_image_path = get_result_yolo(temp_path)
