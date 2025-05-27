@@ -103,7 +103,6 @@ export default function ImageUpload() {
     formData.append("image", file)
     formData.append("comment", comment)
     formData.append("category", selectedProjectId)
-    formData.append("status", "true");
 
 
     for (let pair of formData.entries()) {

@@ -11,13 +11,13 @@ User = get_user_model()
 class Image(models.Model):
     category = models.ForeignKey(Project, on_delete=models.CASCADE)
     axis = models.CharField(max_length=20, default='')
-    #image = models.ImageField(storage=S3Boto3Storage(), upload_to='images/')
-    #processed_image = models.ImageField(storage=S3Boto3Storage(), upload_to='processed/', default='')
-    image = models.ImageField(upload_to='images/')
-    processed_image = models.ImageField(upload_to='processed/', default='')
+    image = models.ImageField(storage=S3Boto3Storage(), upload_to='images/')
+    processed_image = models.ImageField(storage=S3Boto3Storage(), upload_to='processed/', default='')
+    #image = models.ImageField(upload_to='images/')
+    #processed_image = models.ImageField(upload_to='processed/', default='')
     uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
     comment = models.TextField(default='')
-    status = models.BooleanField()
+    status = models.BooleanField(null=True, blank=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

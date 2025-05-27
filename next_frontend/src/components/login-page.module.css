@@ -19,33 +19,51 @@
     z-index: 10;
   }
   
-  .imageContainer {
-    flex: 1;
-    background-image: url("/login.png");
-    background-size: cover;
-    background-position: center;
-    position: relative;
+  @keyframes fadeSlideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
   }
-  
-  .imageContent {
-    max-width: 80%;
-    text-align: start;
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .imageTitle {
-    padding: 1.5rem;
-    font-size: 2.5rem;
-    font-weight: 700;
-    line-height: 1.2;
-    
-  }
-  
-  .imageSubtitle {
-    padding: 1.5rem;
-    font-size: 1.2rem;
-    line-height: 1.5;
-    opacity: 0.9;
-  }
+}
+
+.imageContainer {
+  flex: 1;
+  background-image: url("/login.png");
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  padding: 2rem;
+}
+
+.imageContent {
+  max-width: 80%;
+  text-align: start;
+  animation: fadeSlideDown 1s ease-out forwards;
+  animation-delay: 0.3s;
+  opacity: 0; 
+}
+
+.imageTitle {
+  padding: 1.5rem 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.imageSubtitle {
+  padding: 0 0 1.5rem 0;
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: #f0f0f0;
+  opacity: 0.9;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
 
   /* Form wrapper */
   .formWrapper {

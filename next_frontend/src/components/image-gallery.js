@@ -87,21 +87,15 @@ export default function ImageGallery() {
           },
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          setImages(data);
-        } else {
-          setImages([]);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+
+        const data = await response.json()
+        const approved = data.filter((img) => img.status === true)
+        setImages(approved)
       } catch (error) {
         console.error('Ошибка загрузки изображений проекта:', error);
         setImages([]);
       }
-    };
-  
-    const handleLogout = () => {
-      localStorage.removeItem('authToken');
-      router.push('/login');
     };
     
     const handleImageClick = (image) => {
@@ -147,7 +141,7 @@ export default function ImageGallery() {
                   <div key={image.id} className={styles.imageCard} onClick={() => handleImageClick(image)}>
                     <div className={styles.imageWrapper}>
                       <img
-                        src={`http://localhost:8000${image.image}`}
+                        src={image.processed_image}
                         alt={`Изображение ${image.id}`}
                         className={styles.image}
                       />
@@ -178,7 +172,7 @@ export default function ImageGallery() {
           </button>
         <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
           <img
-            src={`http://localhost:8000${selectedImage.image}`}
+            src={selectedImage.image}
             alt={`Изображение ${selectedImage.id}`}
             className={styles.modalImage}
           />

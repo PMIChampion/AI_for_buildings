@@ -115,7 +115,7 @@ export default function ProjectGroups() {
   };
 
   const handleNavigateToImages = (projectId) => {
-    router.push(`/view?project=${projectId}`)
+    router.push(`/dashboard/view?project=${projectId}`)
   };
     //const handleViewProject = (projectId) => {
       //router.push(`/view?project=${projectId}`)

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { User, FolderOpen, Grid, Upload, AlertCircle, LogOut } from "lucide-react"
 import styles from "./sidebar.module.css"
 
-export default function Sidebar({ onLogout }) {
+export default function Sidebar() {
   const [userData, setUserData] = useState(null)
   const router = useRouter()
 
@@ -15,6 +15,7 @@ export default function Sidebar({ onLogout }) {
       router.push("/login")
       return
     }
+
 
     const fetchUser = async () => {
       try {
@@ -33,6 +34,13 @@ export default function Sidebar({ onLogout }) {
 
     fetchUser()
   }, [])
+
+  const onLogout = async () => {
+      await fetch('/api/logout', { method: 'POST' });
+      localStorage.removeItem("authToken");
+      router.push('/login');
+  };
+
 
   return (
     <aside className={styles.sidebar}>

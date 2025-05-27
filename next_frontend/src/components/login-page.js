@@ -107,7 +107,9 @@ export default function LoginPage() {
       </div>
       <div className={styles.imageContainer}>
         <div className={styles.imageContent}>
-          <h2 className={styles.imageTitle}>Выявление дефектов в бетонных конструкциях</h2>
+          <h2 className={styles.imageTitle}>
+            Выявление дефектов в бетонных конструкциях
+          </h2>
           <p className={styles.imageSubtitle}>
             Данный сайт поможет эффективно определить дефекты, обеспечивая при этом скорость и точность работы
           </p>
